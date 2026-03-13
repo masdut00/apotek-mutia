@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harga Obat - MutiaCare</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <div id="layout-container"></div>
@@ -12,14 +13,26 @@
     <div class="app-container">
         <main class="main-content">
             <h1 class="page-title">Perbandingan Harga 💊</h1>
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-obat" class="search-box" placeholder="Ketik nama obat untuk mencari...">
+            <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; align-items: center;">
+                <div class="search-container" style="flex: 1; margin-bottom: 0;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-obat" class="search-box" placeholder="Cari nama obat...">
+                </div>
+                
+                <div style="display: flex; gap: 10px; background: #fffcfd; padding: 5px 15px; border-radius: 12px; border: 1px solid #ffb8c6;">
+                    <input type="file" id="file-excel" accept=".xlsx, .xls" style="font-size: 13px; max-width: 200px;">
+                    <button id="btn-upload" class="btn" style="width: auto; padding: 8px 15px; font-size: 13px;">📥 Update Harga</button>
+                </div>
             </div>
             <div class="table-responsive">
                 <table id="table-harga">
                     <thead>
-                        <tr><th>Nama Obat</th><th>Harga Apotek</th><th>Harga PBF</th><th>Rekomendasi</th></tr>
+                        <tr>
+                            <th>Nama Obat</th>
+                            <th>Harga Apotek</th>
+                            <th>Harga PBF</th>
+                            <th>Rekomendasi</th>
+                            <th>Aksi</th> </tr>
                     </thead>
                     <tbody><tr><td colspan="4">Memuat data...</td></tr></tbody>
                 </table>

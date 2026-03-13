@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         data.master.forEach(obat => {
             // Filter stok bulanan untuk obat ini, ambil yang terakhir (asumsi tersortir atau ambil log terakhir)
             const logStok = data.stok.filter(s => s.Nama_Obat === obat.Nama_Obat);
-            const stokTerakhir = logStok.length > 0 ? logStok[logStok.length - 1].Stok_Akhir : 0;
+            const stokTerakhir = logStok.length > 0 ? logStok[logStok.length - 1].Jumlah_Akhir : 0;
             
             if (stokTerakhir < obat.Stok_Minimal) {
                 countMenipis++;

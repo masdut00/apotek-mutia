@@ -23,15 +23,20 @@
                     📥 Download Excel
                 </button>
             </div>
+            <div class="filter-lokasi" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="btn-filter active" onclick="filterLokasi('Semua', this)" style="padding: 8px 15px; border-radius: 20px; border: 1px solid #ff758c; background: #ff758c; color: white; cursor: pointer;">Semua</button>
+                <button class="btn-filter" onclick="filterLokasi('Bawah', this)" style="padding: 8px 15px; border-radius: 20px; border: 1px solid #ff758c; background: white; color: #ff758c; cursor: pointer;">Gudang Bawah</button>
+                <button class="btn-filter" onclick="filterLokasi('Atas', this)" style="padding: 8px 15px; border-radius: 20px; border: 1px solid #ff758c; background: white; color: #ff758c; cursor: pointer;">Apotek Atas</button>
+            </div>
 
             <div class="table-responsive">
                 <table id="table-daftar-stok">
                     <thead>
                         <tr>
                             <th>Nama Obat</th>
-                            <th>Satuan</th>
-                            <th>Stok Saat Ini</th>
-                            <th>Batas Aman</th>
+                            <th>Lokasi</th> <th>Satuan</th>
+                            <th>Stok Aktual</th>
+                            <th>Tgl Expired</th>
                             <th>Status</th>
                         </tr>
                     </thead>

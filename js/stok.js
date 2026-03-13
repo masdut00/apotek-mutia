@@ -1,101 +1,106 @@
 let validObatList = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // Bonus Fitur: Otomatis isi kolom Bulan & Tahun sesuai waktu saat ini
+    // Set Bulan otomatis
     const today = new Date();
     const bulanArr = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
-    const bulanSekarang = `${bulanArr[today.getMonth()]} ${today.getFullYear()}`;
-    document.getElementById('bulan').value = bulanSekarang;
+    document.getElementById('bulan').value = `${bulanArr[today.getMonth()]} ${today.getFullYear()}`;
 
-    // Ambil data obat dari API
     await loadDataObat();
 
-    // ==========================================
-    // LOGIKA CUSTOM SEARCHABLE DROPDOWN
-    // ==========================================
+    // Logika Custom Dropdown
     const inputObat = document.getElementById('nama-obat');
     const listContainer = document.getElementById('list-nama-obat');
     const wrapper = document.getElementById('wrapper-nama-obat');
 
-    inputObat.addEventListener('focus', () => {
-        listContainer.classList.add('show');
-        filterList('');
-    });
-
-    inputObat.addEventListener('input', (e) => {
-        listContainer.classList.add('show');
-        filterList(e.target.value);
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!wrapper.contains(e.target)) {
-            listContainer.classList.remove('show');
-        }
-    });
+    inputObat.addEventListener('focus', () => { listContainer.classList.add('show'); filterList(''); });
+    inputObat.addEventListener('input', (e) => { listContainer.classList.add('show'); filterList(e.target.value); });
+    document.addEventListener('click', (e) => { if (!wrapper.contains(e.target)) listContainer.classList.remove('show'); });
 
     function filterList(keyword) {
-        keyword = keyword.toLowerCase();
         const items = listContainer.querySelectorAll('.custom-select-item');
         items.forEach(item => {
-            if (item.textContent.toLowerCase().includes(keyword)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            item.style.display = item.textContent.toLowerCase().includes(keyword.toLowerCase()) ? 'block' : 'none';
         });
     }
 
     // ==========================================
-    // LOGIKA SUBMIT FORM
+    // AUTO KALKULASI JUMLAH AKHIR & TOTAL NILAI
+    // ==========================================
+    const elAwal = document.getElementById('jumlah-awal');
+    const elMasuk = document.getElementById('obat-masuk');
+    const elKeluar = document.getElementById('obat-keluar');
+    const elAkhir = document.getElementById('jumlah-akhir');
+    const elHargaBeli = document.getElementById('harga-beli');
+    const elTotalNilai = document.getElementById('total-nilai');
+
+    function hitungOtomatis() {
+        const awal = parseInt(elAwal.value) || 0;
+        const masuk = parseInt(elMasuk.value) || 0;
+        const keluar = parseInt(elKeluar.value) || 0;
+        const hargaBeli = parseInt(elHargaBeli.value) || 0;
+
+        // Rumus Mutasi Stok
+        const akhir = awal + masuk - keluar;
+        elAkhir.value = akhir;
+
+        // Rumus Valuasi
+        const total = akhir * hargaBeli;
+        // Format ke Rupiah
+        elTotalNilai.value = "Rp " + total.toLocaleString('id-ID');
+    }
+
+    // Jalankan hitungOtomatis setiap kali user mengetik angka
+    [elAwal, elMasuk, elKeluar, elHargaBeli].forEach(el => {
+        el.addEventListener('input', hitungOtomatis);
+    });
+
+    // ==========================================
+    // SUBMIT FORM
     // ==========================================
     document.getElementById('form-stok').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const btnSubmit = document.getElementById('btn-submit');
         const inputNamaObat = document.getElementById('nama-obat').value;
 
-        // Validasi Typo
         if (!validObatList.includes(inputNamaObat)) {
-            alert("❌ Obat tidak valid! Silakan pilih obat dari daftar yang muncul.");
+            alert("❌ Obat tidak valid! Silakan pilih dari daftar.");
             return;
         }
 
         btnSubmit.innerText = "Menyimpan...";
         btnSubmit.disabled = true;
 
-        const bulan = document.getElementById('bulan').value;
-        const stok_awal = parseInt(document.getElementById('stok-awal').value);
-        const stok_akhir = parseInt(document.getElementById('stok-akhir').value);
-        const terjual = stok_awal - stok_akhir;
-
         const payload = {
             action: 'tambahStokBulanan',
-            bulan: bulan,
+            bulan: document.getElementById('bulan').value,
+            lokasi: document.getElementById('lokasi').value, // <-- BARIS BARU INI
             nama_obat: inputNamaObat,
-            stok_awal: stok_awal,
-            stok_akhir: stok_akhir,
-            terjual: terjual
+            jumlah_awal: parseInt(elAwal.value) || 0,
+            obat_masuk: parseInt(elMasuk.value) || 0,
+            obat_keluar: parseInt(elKeluar.value) || 0,
+            jumlah_akhir: parseInt(elAkhir.value) || 0,
+            harga_beli: parseInt(elHargaBeli.value) || 0,
+            total_nilai: (parseInt(elAkhir.value) || 0) * (parseInt(elHargaBeli.value) || 0),
+            expire_date: document.getElementById('expire-date').value,
+            batch: document.getElementById('batch').value
         };
 
         try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
             const result = await res.json();
             
-            // Kosongkan form setelah sukses (kecuali bulan)
-            document.getElementById('nama-obat').value = "";
-            document.getElementById('stok-awal').value = "";
-            document.getElementById('stok-akhir').value = "";
+            // Reset form
+            document.getElementById('form-stok').reset();
+            document.getElementById('bulan').value = `${bulanArr[today.getMonth()]} ${today.getFullYear()}`;
+            elAkhir.value = "";
+            elTotalNilai.value = "";
             
-            alert("✅ " + (result.message || "Stok berhasil disimpan!"));
-
+            alert("✅ " + (result.message || "Stok Opname berhasil disimpan!"));
         } catch (error) {
-            alert("Gagal menyimpan data. Periksa koneksi internet.");
-            console.error(error);
+            alert("Gagal menyimpan data.");
         } finally {
-            btnSubmit.innerText = "Simpan Stok";
+            btnSubmit.innerText = "Simpan Stok Opname";
             btnSubmit.disabled = false;
         }
     });
@@ -105,29 +110,19 @@ async function loadDataObat() {
     try {
         const resObat = await fetch(`${API_URL}?action=getObat`);
         const dataObat = await resObat.json();
-        
         const listContainer = document.getElementById('list-nama-obat');
         const inputObat = document.getElementById('nama-obat');
         
-        listContainer.innerHTML = ''; 
-        validObatList = []; 
-
         dataObat.forEach(obat => {
             validObatList.push(obat.Nama_Obat);
-            
             const divItem = document.createElement('div');
             divItem.className = 'custom-select-item';
             divItem.textContent = obat.Nama_Obat;
-            
-            // Event ketika item obat diklik
             divItem.addEventListener('click', () => {
                 inputObat.value = obat.Nama_Obat;
                 listContainer.classList.remove('show');
             });
-            
             listContainer.appendChild(divItem);
         });
-    } catch (error) {
-        console.error("Gagal memuat daftar obat:", error);
-    }
+    } catch (error) {}
 }

@@ -42,6 +42,21 @@ body { background-color: #fcfcfc; color: #4a4a4a; }
 .nav-links a.active { background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); color: white; box-shadow: 0 4px 10px rgba(255, 117, 140, 0.3); }
 .nav-links a.active .icon { filter: none; }
 
+/* Label Kategori di Sidebar */
+.nav-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffb8c6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 15px 5px 15px;
+}
+
+/* Sembunyikan label ini kalau di HP, biar Bottom Nav tetap bersih */
+@media (max-width: 768px) {
+    .nav-label { display: none; }
+}
+
 /* Konten Utama Desktop */
 .main-content { margin-left: 260px; padding: 40px; width: 100%; min-height: 100vh; background: #fffafb; }
 .page-title { font-size: 24px; color: #ff758c; font-weight: 800; margin-bottom: 25px; }
@@ -68,27 +83,77 @@ th { background: #ff758c; color: white; font-weight: 700; font-size: 14px; text-
 .form-group input:focus, .form-group select:focus { border-color: #ff758c; background: white; }
 button.btn { background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); color: white; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 15px; width: 100%; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3); transition: transform 0.2s; }
 button.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255, 117, 140, 0.4); }
-
+.mobile-bottom-nav, .mobile-popup-overlay, .mobile-popup { display: none; }
 /* =========================================
    RESPONSIVE MOBILE (< 768px)
 ========================================= */
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
     
-    /* Munculkan Header Atas */
+    /* 1. Sembunyikan Sidebar Desktop, Munculkan Header Mobile */
+    .desktop-sidebar { display: none !important; }
     .mobile-header { display: block; background: white; padding: 15px 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.05); }
+    .main-content { margin-left: 0; padding: 20px 20px 100px 20px; } /* Padding bawah diperbesar agar tak tertutup nav */
     
-    /* Ubah Sidebar jadi Bottom Nav */
-    .app-nav { top: auto; bottom: 0; width: 100%; height: auto; border-right: none; padding: 10px 0; flex-direction: row; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 20px rgba(255, 117, 140, 0.1); }
-    .nav-brand { display: none; } /* Sembunyikan logo di nav bawah */
-    .nav-links { flex-direction: row; justify-content: space-around; gap: 0; }
-    .nav-links a { flex-direction: column; padding: 8px; border-radius: 0; background: transparent !important; color: #cbd5e1; box-shadow: none !important; font-size: 11px; }
-    .nav-links a .icon { margin-right: 0; margin-bottom: 4px; font-size: 22px; }
-    .nav-links a.active { color: #ff758c; }
-    .nav-links a.active .icon { transform: translateY(-3px); }
+    /* 2. Navigasi Bawah (Bottom Nav) */
+    .mobile-bottom-nav {
+        display: flex; position: fixed; bottom: 0; left: 0; width: 100%;
+        background: white; justify-content: space-around; align-items: center;
+        padding: 12px 0 15px 0; border-radius: 20px 20px 0 0;
+        box-shadow: 0 -4px 20px rgba(255, 117, 140, 0.1); z-index: 1000;
+    }
+    .mobile-bottom-nav .nav-item {
+        display: flex; flex-direction: column; align-items: center;
+        color: #cbd5e1; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none;
+        transition: all 0.3s;
+    }
+    .mobile-bottom-nav .nav-item.active { color: #ff758c; }
+    .mobile-bottom-nav .nav-item .icon { font-size: 24px; margin-bottom: 4px; transition: transform 0.3s; filter: grayscale(100%) opacity(0.6); }
+    .mobile-bottom-nav .nav-item.active .icon { filter: none; transform: translateY(-3px); }
 
-    /* Sesuaikan Konten */
-    .main-content { margin-left: 0; padding: 20px 20px 90px 20px; /* Padding bawah agar tidak tertutup nav */ }
+    /* 3. Pop-up Bottom Sheet (Overlay Gelap & Menu Geser) */
+    .mobile-popup-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: transparent; /* Layar tidak jadi gelap lagi */
+        z-index: 1001; 
+    }
+    .mobile-popup-overlay.show { display: block; }
+
+    .mobile-popup {
+        display: block;
+        position: fixed; 
+        bottom: 85px; /* Melayang pas di atas Bottom Nav */
+        left: 50%;
+        transform: translateX(-50%) translateY(15px); /* Posisinya persis di tengah */
+        width: auto; 
+        min-width: 220px;
+        background: white; 
+        border-radius: 16px;
+        padding: 8px; 
+        z-index: 1002;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 10px 25px rgba(255, 117, 140, 0.2); /* Bayangan estetik */
+        border: 1px solid #ffe4e8;
+    }
+    .mobile-popup.show { 
+        opacity: 1; 
+        visibility: visible;
+        transform: translateX(-50%) translateY(0); 
+    }
+    
+    .mobile-popup h3 { display: none; } /* Judul kita hilangkan agar makin ringkas */
+    
+    .mobile-popup a {
+        display: flex; align-items: center; padding: 12px 15px; color: #4a4a4a;
+        text-decoration: none; font-weight: 700; border-radius: 10px; margin-bottom: 2px;
+        background: transparent; border: none; transition: background 0.2s;
+    }
+    .mobile-popup a:last-child { margin-bottom: 0; }
+    .mobile-popup a:active { background: #fff0f3; color: #ff758c; }
+    .mobile-popup a .icon { margin-right: 12px; font-size: 20px; }s
+
     .table-responsive { overflow-x: auto; border-radius: 16px; box-shadow: 0 8px 15px rgba(255, 117, 140, 0.05); }
     table { box-shadow: none; border-radius: 0; }
 }
@@ -181,3 +246,21 @@ button.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,
 .custom-select-list::-webkit-scrollbar { width: 6px; }
 .custom-select-list::-webkit-scrollbar-track { background: transparent; }
 .custom-select-list::-webkit-scrollbar-thumb { background: #ffb8c6; border-radius: 10px; }
+
+/* =========================================
+   TOMBOL AKSI (EDIT & DELETE) TABEL
+========================================= */
+.btn-aksi {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 5px;
+    transition: transform 0.2s;
+}
+.btn-aksi:hover { transform: scale(1.05); }
+.btn-edit { background: #e0f2fe; color: #0284c7; }
+.btn-delete { background: #fee2e2; color: #dc2626; }
+.btn-aksi:disabled { opacity: 0.5; cursor: not-allowed; }
