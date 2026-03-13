@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Daftar Stok - MutiaCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="layout-container"></div>
+    
+    <div class="app-container">
+        <main class="main-content">
+            <h1 class="page-title">Daftar Stok Obat 📋</h1>
+            
+            <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+                <div class="search-container" style="flex: 1; margin-bottom: 0;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-stok" class="search-box" placeholder="Cari nama obat...">
+                </div>
+                <button id="btn-export" class="btn" style="width: auto; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);">
+                    📥 Download Excel
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table id="table-daftar-stok">
+                    <thead>
+                        <tr>
+                            <th>Nama Obat</th>
+                            <th>Satuan</th>
+                            <th>Stok Saat Ini</th>
+                            <th>Batas Aman</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5">Memuat data stok...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/sidebar.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/daftar-stok.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Harga - MutiaCare</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="layout-container"></div>
+    
+    <div class="app-container">
+        <main class="main-content">
+            <h1 class="page-title">Import Harga Excel 📥</h1>
+            <div class="card">
+                <p style="margin-bottom: 20px; color: #666;">Format Excel: <strong>Nama_Obat | Supplier | Harga</strong></p>
+                <div class="form-group">
+                    <input type="file" id="file-excel" accept=".xlsx, .xls">
+                </div>
+                <button id="btn-upload" class="btn">Upload & Update</button>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/sidebar.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/import.js"></script>
+</body>
+</html>

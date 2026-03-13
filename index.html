@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Dashboard - MutiaCare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="layout-container"></div> <div class="app-container">
+        <main class="main-content">
+            <h1 class="page-title">Halo, Mutia! ✨</h1>
+            <p style="color: #888; margin-bottom: 25px; font-weight: 600;">Berikut ringkasan stok apotek hari ini.</p>
+            
+            <div class="summary-cards">
+                <div class="card">Total Jenis Obat <span id="total-obat">0</span></div>
+                <div class="card warning">Obat Menipis <span id="obat-menipis">0</span></div>
+            </div>
+            
+            <h2>Rekomendasi Pembelian (Stok &lt; Minimal)</h2>
+            <div class="table-responsive">
+                <table id="table-rekomendasi">
+                    <thead>
+                        <tr><th>Nama Obat</th><th>Sisa Stok</th><th>Supplier Termurah</th><th>Harga</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/sidebar.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
